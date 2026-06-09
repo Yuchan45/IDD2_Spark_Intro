@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import pyspark
+from pyspark import StorageLevel
 from pyspark.sql import SparkSession
 
 
@@ -11,6 +12,11 @@ SOURCE_PATH = Path(__file__).parent / "src"
 sys.path.insert(0, str(SOURCE_PATH))
 
 from app_spark.consignas.parte_1 import resolver_parte_1
+from app_spark.consignas.parte_2 import resolver_parte_2
+from app_spark.consignas.parte_3 import resolver_parte_3
+from app_spark.consignas.parte_4 import resolver_parte_4
+from app_spark.consignas.parte_5 import resolver_parte_5
+from app_spark.consignas.parte_6 import resolver_parte_6
 from app_spark.dataset import SAMPLE_FRACTION, get_dataset
 
 
@@ -46,7 +52,16 @@ def main() -> int:
         print("Dataset cargado correctamente.")
         print(f"Se utilizara un subconjunto del {SAMPLE_FRACTION:.0%} de los datos.")
 
+        # La muestra se guarda temporalmente en disco para reutilizarla.
+        dataset.persist(StorageLevel.DISK_ONLY)
+
         resolver_parte_1(dataset)
+        resolver_parte_2(dataset)
+        resolver_parte_3(dataset)
+        resolver_parte_4(spark, dataset)
+        resolver_parte_5(dataset)
+        resolver_parte_6(dataset)
+
         return 0
     finally:
         # La sesion se cierra siempre, incluso si ocurre un error.
