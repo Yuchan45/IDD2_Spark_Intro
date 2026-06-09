@@ -17,6 +17,8 @@ from app_spark.consignas.parte_3 import resolver_parte_3
 from app_spark.consignas.parte_4 import resolver_parte_4
 from app_spark.consignas.parte_5 import resolver_parte_5
 from app_spark.consignas.parte_6 import resolver_parte_6
+from app_spark.consignas.parte_7 import resolver_parte_7
+from app_spark.consignas.parte_8 import resolver_parte_8
 from app_spark.dataset import SAMPLE_FRACTION, get_dataset
 
 
@@ -61,6 +63,8 @@ def main() -> int:
         resolver_parte_4(spark, dataset)
         resolver_parte_5(dataset)
         resolver_parte_6(dataset)
+        resolver_parte_7(spark)
+        resolver_parte_8(spark, dataset)
 
         return 0
     finally:

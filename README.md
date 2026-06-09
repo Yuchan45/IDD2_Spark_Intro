@@ -29,7 +29,7 @@ py main.py
 2. Abre una sesion local de Spark.
 3. Descarga el archivo Parquet si no existe o esta corrupto.
 4. Carga una muestra reproducible del 10%.
-5. Resuelve las Partes 1 a 6 desde modulos separados.
+5. Resuelve las Partes 1 a 8 desde modulos separados.
 
 ## Estructura
 
@@ -45,7 +45,9 @@ appSpark/
 |       |   |-- parte_3.py
 |       |   |-- parte_4.py
 |       |   |-- parte_5.py
-|       |   `-- parte_6.py
+|       |   |-- parte_6.py
+|       |   |-- parte_7.py
+|       |   `-- parte_8.py
 |       `-- dataset.py
 |-- introCode.txt
 |-- requirements.txt

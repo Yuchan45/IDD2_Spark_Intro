@@ -1,2 +1,2 @@
 pyspark>=3.5,<4.0
-
+pyarrow>=18
