@@ -1,0 +1,76 @@
+#Importamos la librería pyspark y verificamos la versión
+import pyspark
+print(pyspark.__version__)
+
+#Importamos librerías adicionales de trabajo
+import os #sistema operativo
+import sys #sistema
+import urllib.request #request para acceso a URLs
+
+#Seteamos variables de trabajo en el ambiente
+os.environ["JAVA_HOME"] = "C:\\Program Files\\Microsoft\\jdk-21.0.11.10-hotspot\\" #Directorio donde está instalado Java, reemplazar por ruta local 
+os.environ["PATH"] = os.environ["JAVA_HOME"] + "\\bin;" + os.environ["PATH"]
+os.environ["HADOOP_HOME"] = "C:\\Hadoop\\hadoop-3.3.6\\" #Se debe descargar Winutils 'https://github.com/cdarlint/winutils/tree/master', reemplazar por ruta local 
+os.environ["PATH"] = os.environ["HADOOP_HOME"] + "\\bin;" + os.environ["PATH"]
+
+# Point Spark to the current Python interpreter
+os.environ["PYSPARK_PYTHON"] = sys.executable
+os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
+
+print(os.environ.get("JAVA_HOME"))
+print(os.environ.get("HADOOP_HOME"))
+
+#Abrimos una sesión local de Spark
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .master("local[2]") \
+    .appName("Test") \
+    .config("spark.driver.host", "localhost") \
+    .getOrCreate()
+
+spark.sparkContext.setLogLevel("INFO")
+
+# Direct HTTP URL (public parquet file)
+# Archivo de ejemplo con viajes en taxis de NY con millones de registros
+
+url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-01.parquet"
+local_file = "yellow_tripdata_2023-01.parquet"
+
+urllib.request.urlretrieve(url, local_file)
+
+df_taxi = spark.read.parquet(local_file) #leemos el archivo parquet desde la sesión de Spark y creamos un dataframe df_taxi
+df_taxi.show(5)
+
+df_taxi.printSchema() #mostramos el esquema del archivo
+
+df_taxi.count() #verificamos la cantidad de registros del archivo
+
+#Creamos una vista temporal en base a los datos del archivo
+df_taxi.createOrReplaceTempView("taxi") 
+
+#Función de agregación para mostrar la cantidad de viajes según número de pasajeros
+spark.sql("""
+SELECT passenger_count, COUNT(*) as trips
+FROM taxi
+GROUP BY passenger_count
+ORDER BY trips DESC
+""").show()
+
+#Mostramos los viajes con exactamente 1 solo pasajero (limitando a 10 registros)
+spark.sql("""
+SELECT *
+FROM taxi
+WHERE passenger_count = 1
+LIMIT 10
+""").show()
+
+#Mostramos la tarifa promedio según la cantidad de pasajeros de los viajes junto al total de viajes
+spark.sql("""
+SELECT
+    passenger_count,
+    AVG(fare_amount) as avg_fare,
+    COUNT(*) as total_trips
+FROM taxi
+GROUP BY passenger_count
+""").show()
