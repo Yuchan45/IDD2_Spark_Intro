@@ -1,6 +1,6 @@
 # Actividad Spark
 
-Version simplificada del proyecto, dejando toda la logica en un solo archivo `main.py`, con un estilo parecido al ejemplo de `introCode.txt`.
+Resolucion modular de la actividad practica de Apache Spark.
 
 ## Requisitos
 
@@ -27,15 +27,21 @@ py main.py
 
 1. Muestra la version de PySpark.
 2. Abre una sesion local de Spark.
-3. Lee el archivo Parquet remoto directamente desde la URL.
-4. Muestra algunas filas, el esquema y la cantidad total de registros.
-5. Ejecuta consultas SQL simples sobre una vista temporal llamada `reviews`.
+3. Descarga el archivo Parquet si no existe o esta corrupto.
+4. Carga una muestra reproducible del 10%.
+5. Ejecuta la resolucion de cada consigna desde su propio modulo.
 
 ## Estructura
 
 ```text
 appSpark/
+|-- data/
 |-- main.py
+|-- src/
+|   `-- app_spark/
+|       |-- consignas/
+|       |   `-- parte_1.py
+|       `-- dataset.py
 |-- introCode.txt
 |-- requirements.txt
 `-- README.md
